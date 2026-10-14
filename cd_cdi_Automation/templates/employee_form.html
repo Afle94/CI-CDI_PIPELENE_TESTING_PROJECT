@@ -1,0 +1,21 @@
+{% extends 'employee_base.html' %}
+{% block title %}Add Employee{% endblock %}
+{% block content %}
+<p class="breadcrumb"><a href="{% url 'employee-list-view' %}">Employees</a> / Add employee</p>
+<div class="page-heading"><div><h1>Add employee</h1><p class="muted">A new person. A stronger team.</p></div></div>
+<div class="form-layout">
+    <aside><h2>Personal details</h2><p class="muted">Start with the essentials.</p><p class="aside-note">The joining date is recorded automatically when you save.</p></aside>
+    <form class="employee-form" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        <div class="field {% if field.errors %}has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="required" aria-hidden="true">*</span>{% endif %}</label>
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+        <div class="form-actions"><a class="button secondary" href="{% url 'employee-list-view' %}">Cancel</a><button class="button primary" type="submit">Save employee</button></div>
+    </form>
+</div>
+{% endblock %}

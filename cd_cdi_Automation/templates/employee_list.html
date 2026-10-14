@@ -1,0 +1,51 @@
+{% extends 'employee_base.html' %}
+{% block content %}
+<p class="breadcrumb">Workspace / Employees</p>
+<div class="page-heading">
+    <div><h1>Employees</h1><p class="muted">The faces and talent behind your team.</p></div>
+    <a class="button primary" href="{% url 'employee-create-form' %}"><span aria-hidden="true">+</span> Add employee</a>
+</div>
+{% if employees %}
+<div class="toolbar">
+    <div class="search"><label for="employee-search">Search employees</label><input id="employee-search" type="search" placeholder="Search name, email or position"></div>
+    <div class="filter"><label for="position-filter">Position</label><select id="position-filter"><option value="">All positions</option></select></div>
+    <p class="count" id="result-count" aria-live="polite">{{ employees|length }} employees</p>
+</div>
+<div class="table-wrap"><table aria-label="Employee directory">
+    <thead><tr><th scope="col">Employee</th><th scope="col">Email address</th><th scope="col">Position</th><th scope="col">Date joined</th></tr></thead>
+    <tbody id="employee-rows">{% for employee in employees %}
+    <tr data-position="{{ employee.position }}">
+        <td><div class="person"><span class="avatar" aria-hidden="true">{{ employee.name|slice:':1'|upper }}</span><span class="person-name">{{ employee.name }}</span></div></td>
+        <td><a class="email" href="mailto:{{ employee.email }}">{{ employee.email }}</a></td>
+        <td><span class="position">{{ employee.position }}</span></td><td class="date">{{ employee.date_joined|date:'M j, Y' }}</td>
+    </tr>{% endfor %}</tbody>
+</table></div>
+<div class="empty" id="no-results" hidden><h2>No matching employees</h2><p>Try another name or position.</p><button class="button secondary" id="clear-filters" type="button">Clear filters</button></div>
+{% else %}
+<div class="empty" style="border-top:1px solid var(--line)"><h2>Your team starts here</h2><p>Add your first employee to the directory.</p><a class="button secondary" href="{% url 'employee-create-form' %}">Add employee</a></div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+const search = document.getElementById('employee-search');
+if (search) {
+    const filter = document.getElementById('position-filter');
+    const rows = Array.from(document.querySelectorAll('#employee-rows tr'));
+    [...new Set(rows.map(row => row.dataset.position))].sort().forEach(position => filter.add(new Option(position, position)));
+    function updateResults() {
+        const query = search.value.trim().toLowerCase();
+        let count = 0;
+        rows.forEach(row => {
+            row.hidden = !row.textContent.toLowerCase().includes(query) || (filter.value !== '' && row.dataset.position !== filter.value);
+            if (!row.hidden) count++;
+        });
+        document.getElementById('result-count').textContent = `${count} employee${count === 1 ? '' : 's'}`;
+        document.getElementById('no-results').hidden = count !== 0;
+    }
+    search.addEventListener('input', updateResults);
+    filter.addEventListener('change', updateResults);
+    document.getElementById('clear-filters').addEventListener('click', () => { search.value = ''; filter.value = ''; updateResults(); search.focus(); });
+    updateResults();
+}
+</script>
+{% endblock %}

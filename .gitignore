@@ -1,0 +1,49 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local Django database and runtime files
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.log
+media/
+staticfiles/
+
+# Local secrets (keep example configuration tracked)
+.env
+.env.*
+!.env.example
+!.env.sample
+local_settings.py
+
+# Test reports and build output
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+build/
+dist/
+*.egg-info/
+
+# Editor and operating system files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Keep Django migrations, templates and source static assets tracked.
